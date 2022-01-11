@@ -1,9 +1,9 @@
 pub struct Tile {
-    row_coordinate: u8,
-    col_coordinate: u8,
+    pub row_coordinate: u8,
+    pub col_coordinate: u8,
 
-    value: u8,
-    possible_values: Vec<u8>,
+    pub value: u8,
+    pub possible_values: Vec<u8>,
 }
 
 impl Tile {
@@ -17,6 +17,7 @@ impl Tile {
     /// Given a vec of possible values, update a tile
     pub fn update_tile(&mut self, new_possible: Vec<u8>) {
         if self.value != 0 { panic!("Don't update a tile that's not empty!"); }
+
         if new_possible.len() == 1 {
             self.value = new_possible[0];
             self.possible_values = Vec::new();
