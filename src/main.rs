@@ -15,20 +15,23 @@ fn main() {
     }
 
     println!();
-    let mut i = 0;
 
     // Try to solve sudoku in 500 iterations
     // This has to be changed
     loop {
+        let mut i = false;
+
         for row in 0..9 {
             for col in 0..9 {
                 let pos = board.check_possibilities(row, col);
-                if board.tiles[row][col].value == 0 { board.tiles[row][col].update_tile(pos); }
+                if board.tiles[row][col].value == 0 {
+                    // i will be true if any value of the sudoku is changed
+                    i = i || board.tiles[row][col].update_tile(pos);
+                }
             }
         }
-        i += 1;
 
-        if i == 500 {
+        if !i {
             break;
         }
     }
@@ -39,4 +42,6 @@ fn main() {
             print!("{}", board.tiles[i][j].value);
         }
     }
+
+    println!();
 }

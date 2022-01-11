@@ -15,13 +15,17 @@ impl Tile {
     }
 
     /// Given a vec of possible values, update a tile
-    pub fn update_tile(&mut self, new_possible: Vec<u8>) {
+    pub fn update_tile(&mut self, new_possible: Vec<u8>) -> bool {
         if self.value != 0 { panic!("Don't update a tile that's not empty!"); }
 
         if new_possible.len() == 1 {
             self.value = new_possible[0];
             self.possible_values = Vec::new();
-        } else { self.possible_values = new_possible; }
+            true // Return true if a value in the board has been changed
+        } else {
+            self.possible_values = new_possible;
+            false // Return false if no value was changed
+        }
     }
 
     pub fn display(&self) {

@@ -28,7 +28,6 @@ impl Board {
         Board { tiles }
     }
 
-    // Todo: Check items in block too
     pub fn check_possibilities(&self, row: usize, col: usize) -> Vec<u8> {
         let mut cannot_be: Vec<u8> = Vec::new();
         let mut pos: Vec<u8> = Vec::new();
