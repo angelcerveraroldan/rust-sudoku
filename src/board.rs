@@ -58,4 +58,51 @@ impl Board {
 
         pos
     }
+
+    pub fn finished(&self) -> bool {
+        let mut finished = true;
+
+        for row in 0..9 {
+            for col in 0..9 {
+                if self.tiles[row][col].value == 0 { finished = false }
+            }
+        }
+
+        finished
+    }
+
+    /// Update all tiles that only have one valid answer
+    pub fn simplify(&mut self) {
+        loop {
+            let mut i = false;
+
+            for row in 0..9 {
+                for col in 0..9 {
+                    let pos = self.check_possibilities(row, col);
+                    if self.tiles[row][col].value == 0 {
+                        // i will be true if any value of the sudoku is changed
+                        i = i || self.tiles[row][col].update_tile(pos);
+                    }
+                }
+            }
+
+            if self.finished() || !i { break }
+        }
+    }
+
+    pub fn display(&self) {
+        println!();
+
+        for i in 0..9 {
+            for j in 0..9 {
+                print!("{} ", self.tiles[i][j].value);
+
+                if (j + 1) % 3 == 0 { print!(" "); }
+            }
+
+            println!();
+            if (i + 1) % 3 == 0 { println!(); }
+        }
+    }
 }
+
