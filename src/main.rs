@@ -1,47 +1,38 @@
-mod tile;
 mod board;
+mod tile;
 
 use board::Board;
 
+//    let mut board = Board::new(String::from(
+//         "070000043040009610800634900094052000358460020000800530080070091902100005007040802"));
+
 fn main() {
+    // Can only solve a simple sudoku
     let mut board = Board::new(String::from(
-        "500086001002000600071000250910020070300145006060090024053000060000903000200510000"));
+        "00000000042100005000700008100000302908320000002070809070530400090000675000600093",
+    ));
 
-    // Display Sudoku before solving
-    for i in 0..9 {
-        for j in 0..9 {
-            print!("{}", board.tiles[i][j].value);
+    // let mut board = Board::new(String::from(
+    //     "000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    // ));
+
+    board.display();
+
+    solve(board);
+}
+
+fn solve(mut board: Board) {
+    board.simplify();
+
+    if board.finished() {
+        board.display();
+        println!("\n\n\n");
+    } else {
+        // Find the first empty cell and fill it with all values
+        let coord = board.first_empty();
+
+        for val in &board.tiles[coord[0]][coord[1]].possible_values {
+            solve(board.change_tile(coord[0], coord[1], val));
         }
     }
-
-    println!();
-
-    // Try to solve sudoku in 500 iterations
-    // This has to be changed
-    loop {
-        let mut i = false;
-
-        for row in 0..9 {
-            for col in 0..9 {
-                let pos = board.check_possibilities(row, col);
-                if board.tiles[row][col].value == 0 {
-                    // i will be true if any value of the sudoku is changed
-                    i = i || board.tiles[row][col].update_tile(pos);
-                }
-            }
-        }
-
-        if !i {
-            break;
-        }
-    }
-
-    // Display sudoku after solving
-    for i in 0..9 {
-        for j in 0..9 {
-            print!("{}", board.tiles[i][j].value);
-        }
-    }
-
-    println!();
 }
