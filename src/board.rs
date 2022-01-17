@@ -1,5 +1,6 @@
 use super::tile::Tile;
 
+#[derive(Clone)]
 pub struct Board {
     pub(crate) tiles: Vec<Vec<Tile>>,
 }
@@ -7,7 +8,9 @@ pub struct Board {
 impl Board {
     /// Turn a 81 character long String into a sudoku board
     pub fn new(board_str: String) -> Board {
-        if board_str.len() != 81 { panic!("The String passed to make the board isn't of length 81") }
+        if board_str.len() != 81 {
+            panic!("The String passed to make the board isn't of length 81")
+        }
         let mut board_chars = board_str.chars();
 
         let mut tiles: Vec<Vec<Tile>> = Vec::new();
@@ -34,9 +37,13 @@ impl Board {
 
         for n in 0..9 {
             // Check column
-            if self.tiles[row][n].value != 0 && n != col { cannot_be.push(self.tiles[row][n].value) }
+            if self.tiles[row][n].value != 0 && n != col {
+                cannot_be.push(self.tiles[row][n].value)
+            }
             // Check row
-            if self.tiles[n][col].value != 0 && n != row { cannot_be.push(self.tiles[n][col].value) }
+            if self.tiles[n][col].value != 0 && n != row {
+                cannot_be.push(self.tiles[n][col].value)
+            }
         }
 
         // Check block
@@ -53,7 +60,9 @@ impl Board {
         }
 
         for i in 1..10 {
-            if !cannot_be.contains(&i) { pos.push(i) }
+            if !cannot_be.contains(&i) {
+                pos.push(i)
+            }
         }
 
         pos
@@ -64,11 +73,37 @@ impl Board {
 
         for row in 0..9 {
             for col in 0..9 {
-                if self.tiles[row][col].value == 0 { finished = false }
+                if self.tiles[row][col].value == 0 {
+                    finished = false
+                }
             }
         }
 
         finished
+    }
+
+    // Todo improve valid function
+    pub fn valid(&self) -> bool {
+        let mut valid = true;
+
+        for row in 0..9 {
+            for col in 0..9 {
+                if self.tiles[row][col].value == 0 && self.tiles[row][col].possible_values.len() < 1
+                {
+                    valid = false;
+                }
+            }
+        }
+
+        valid
+    }
+
+    pub fn change_tile(&self, row: usize, col: usize, val: &u8) -> Board {
+        let mut clone = self.clone();
+
+        clone.tiles[row][col].value = *val;
+
+        clone
     }
 
     /// Update all tiles that only have one valid answer
@@ -86,8 +121,22 @@ impl Board {
                 }
             }
 
-            if self.finished() || !i { break }
+            if self.finished() || !i {
+                break;
+            }
         }
+    }
+
+    pub fn first_empty(&self) -> Vec<usize> {
+        for row in 0..9 {
+            for col in 0..9 {
+                if self.tiles[row][col].value == 0 {
+                    return vec![row, col];
+                }
+            }
+        }
+
+        panic!("aa");
     }
 
     pub fn display(&self) {
@@ -97,12 +146,15 @@ impl Board {
             for j in 0..9 {
                 print!("{} ", self.tiles[i][j].value);
 
-                if (j + 1) % 3 == 0 { print!(" "); }
+                if (j + 1) % 3 == 0 {
+                    print!(" ");
+                }
             }
 
             println!();
-            if (i + 1) % 3 == 0 { println!(); }
+            if (i + 1) % 3 == 0 {
+                println!();
+            }
         }
     }
 }
-
