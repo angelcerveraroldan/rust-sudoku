@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub struct Tile {
     pub row_coordinate: u8,
     pub col_coordinate: u8,
@@ -9,14 +10,25 @@ pub struct Tile {
 impl Tile {
     pub fn new(row_coordinate: u8, col_coordinate: u8, value: u8) -> Tile {
         // We will update this later for each empty value
-        let possible_values: Vec<u8>= Vec::new();
+        let possible_values: Vec<u8> = Vec::new();
 
-        Tile { row_coordinate, col_coordinate, value, possible_values }
+        Tile {
+            row_coordinate,
+            col_coordinate,
+            value,
+            possible_values,
+        }
     }
 
     /// Given a vec of possible values, update a tile
+    /// If there is only one possible value for a tile, fill it in and empty the possible_values vector
+    /// If there are multiple possible values for a tile, update the possible_values vector
+    ///
+    /// Because there can only be one answer to any tiles this function changes, we will mutate the value in the board
     pub fn update_tile(&mut self, new_possible: Vec<u8>) -> bool {
-        if self.value != 0 { panic!("Don't update a tile that's not empty!"); }
+        if self.value != 0 {
+            panic!("Don't update a tile that's not empty!");
+        }
 
         if new_possible.len() == 1 {
             self.value = new_possible[0];
@@ -28,8 +40,4 @@ impl Tile {
         }
     }
 
-    pub fn display(&self) {
-        println!("(col, row): ({}, {}), value: {}, possible_values: {:?}",
-                 self.col_coordinate, self.row_coordinate, self.value, self.possible_values);
-    }
 }
